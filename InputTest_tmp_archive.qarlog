@@ -1,0 +1,134 @@
+Quartus Prime Archive log --	C:/Users/kalan/Downloads/InputTest_MiSTer-main/InputTest_tmp_archive.qarlog
+
+Archive:	C:/Users/kalan/Downloads/InputTest_MiSTer-main/InputTest_tmp_archive.qar
+Date:		Mon Feb 19 18:49:39 2024
+Quartus Prime		17.0.2 Build 602 07/19/2017 SJ Lite Edition
+
+	=========== Files Selected: ===========
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/InputTest.qpf
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/InputTest.qsf
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/InputTest.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/build_id.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/db/stp1_auto_stripped.stp
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/files.qip
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/jtag.cdf
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/mycore.sdc
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/output_files/stp1.stp
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/GBMidi.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/JTFRAME/jtframe_cen24.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/JTFRAME/jtframe_resync.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/JTFRAME/jtframe_vtimer.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/blip_gen.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/charmap.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/dpram.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/dpram_w1r2.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/duty_switch.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/echo_gen.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/envelope.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/gbc_snd.vhd
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/generic_timer.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/jt49/jt49.qip
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/jt49/jt49.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/jt49/jt49_bus.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/jt49/jt49_cen.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/jt49/jt49_div.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/jt49/jt49_eg.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/jt49/jt49_exp.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/jt49/jt49_noise.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/jt5205/jt5205.qip
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/jt5205/jt5205.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/jt5205/jt5205_adpcm.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/jt5205/jt5205_interpol2x.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/jt5205/jt5205_timing.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/lfsr.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/midi_trans.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/midipb_to_gbfreq_LUT.mif
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/midipb_to_gbfreq_LUT.qip
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/midipb_to_gbfreq_LUT.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/mixer.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/music.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/pll.cmp
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/pll.qip
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/pll.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/pll/pll_0002.qip
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/pll/pll_0002.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/poly_disp.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/sound.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/speedcontrol.vhd
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/spram.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/sprite_engine.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/starfield.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/system.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/tilemap.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/tv80/TV80.qip
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/tv80/tv80_alu.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/tv80/tv80_core.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/tv80/tv80_mcode.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/tv80/tv80_reg.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/tv80/tv80e.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/tv80/tv80n.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/tv80/tv80s.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/uart_rx.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/rtl/vibrato_gen.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/alsa.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/arcade_video.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/ascal.vhd
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/audio_out.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/build_id.tcl
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/ddr_svc.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/f2sdram_safe_terminator.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/gamma_corr.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/hdmi_config.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/hps_io.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/hq2x.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/i2c.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/i2s.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/iir_filter.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/ltc2308.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/math.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/mcp23009.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/mt32pi.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/osd.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/pll_audio.qip
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/pll_audio.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/pll_audio/pll_audio_0002.qip
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/pll_audio/pll_audio_0002.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/pll_cfg.qip
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/pll_cfg.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/pll_cfg/altera_pll_reconfig_core.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/pll_cfg/altera_pll_reconfig_top.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/pll_hdmi.qip
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/pll_hdmi.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/pll_hdmi/pll_hdmi_0002.qip
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/pll_hdmi/pll_hdmi_0002.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/pll_hdmi_adj.vhd
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/pll_q17.qip
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/scandoubler.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/scanlines.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/sd_card.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/shadowmask.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/sigma_delta_dac.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/spdif.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/sys.qip
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/sys.tcl
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/sys_analog.tcl
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/sys_dual_sdram.tcl
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/sys_top.sdc
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/sys_top.v
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/sysmem.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/vga_out.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/video_cleaner.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/video_freak.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/video_freezer.sv
+C:/Users/kalan/Downloads/InputTest_MiSTer-main/sys/video_mixer.sv
+c:/intelfpga_lite/17.0/quartus/bin64/assignment_defaults.qdf
+	======= Total: 117 files to archive =======
+
+	================ Status: ===============
+All files archived successfully.
+
+
+******* Archived project restoration attempt on Mon Feb 19 18:49:45 2024
+Source archive file:	C:/Users/kalan/Downloads/InputTest_MiSTer-main/InputTest_tmp_archive.qar
+Archive was extracted into	C:/Users/kalan/OneDrive/MiSTer Stuff/GBMidi/
+		 - successfully.
