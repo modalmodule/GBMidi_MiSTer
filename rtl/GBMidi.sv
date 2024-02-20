@@ -1,6 +1,6 @@
 /*============================================================================
-	Game Boy Midi Module - GBMidi module
-	
+	Game Boy Midi Core - GBMidi module
+
 	Aruthor: ModalModule - https://github.com/modalmodule/
 	Version: 0.1
 	Date: 2024-02-19
@@ -26,18 +26,18 @@ module GBMidi
 	input         ce_2x,
 	input         reset,
 	input [127:0]      status,
-	
-	input         pal,
-	input         scandouble,
 
-	output reg    ce_pix,
+	// input         pal,
+	// input         scandouble,
 
-	output reg    HBlank,
-	output reg    HSync,
-	output reg    VBlank,
-	output reg    VSync,
+	// output reg    ce_pix,
 
-	output  [7:0] video,
+	// output reg    HBlank,
+	// output reg    HSync,
+	// output reg    VBlank,
+	// output reg    VSync,
+
+	// output  [7:0] video,
 
 	input [15:0] joystick_0,
 
@@ -74,7 +74,7 @@ always @(posedge clk) begin
 	else if(ce_pix) begin
 		if(hc == 637) begin
 			hc <= 0;
-			if(vc == (pal ? (scandouble ? 623 : 311) : (scandouble ? 523 : 261))) begin 
+			if(vc == (pal ? (scandouble ? 623 : 311) : (scandouble ? 523 : 261))) begin
 				vc <= 0;
 				vvc <= vvc + 9'd6;
 			end else begin
@@ -110,7 +110,7 @@ always @(posedge clk) begin
 				else if (vc == 0) VBlank <= 0;
 		end
 	end
-	
+
 	if (hc == 590) HSync <= 0;
 end
 
@@ -120,14 +120,14 @@ cos cos(vvc + {vc>>scandouble, 2'b00}, cos_out);
 
 assign video = (cos_g >= rnd_c) ? {cos_g - rnd_c, 2'b00} : 8'd0;*/
 assign note_out = (note_on_reg[sq1_channel]<<9) + (note_reg[sq1_channel]-36); //{note_on_reg[0], note_on_reg[0], 2'b00, note_reg[0]-36};
-assign note_out2 = (note_on_reg[sq2_channel]<<9) + (note_reg[sq2_channel]-36);  
+assign note_out2 = (note_on_reg[sq2_channel]<<9) + (note_reg[sq2_channel]-36);
 assign poly_note_out = poly_note_out_combined[max];
 //reg[255:0] poly_note_out_reg;
 
 //OSD labels
 wire[1:0] duty_set = status[6:5];
-wire modtoDuty = status[13]; 
-wire auto_poly = status[7]; 
+wire modtoDuty = status[13];
+wire auto_poly = status[7];
 wire fade_en = status[8];
 wire[3:0] fade_speed = status[12:9];
 wire gamepadtoNotes = status[3];
@@ -142,7 +142,7 @@ wire note_on;
 wire note_off;
 wire[3:0] mchannel;
 wire[6:0] note;
-wire[6:0] velocity; 
+wire[6:0] velocity;
 wire cc_send;
 wire[6:0] cc;
 wire[6:0] cc_val;
@@ -251,7 +251,7 @@ reg[3:0] poly_velocity_reg[0:15][0:max+max-1];
 reg poly_note_sus_on[0:15][0:max+max-1];
 reg[4:0] poly_max_voice = max+max-'b1;
 reg[4:0] poly_replace;
-reg[4:0] poly_cvoice; 
+reg[4:0] poly_cvoice;
 reg vfound;
 reg[13:0] poly_pb_lookup[0:15][0:max+max-1];
 
@@ -301,7 +301,7 @@ always @ (posedge clk) begin
 					note_switch <= 1;
 				end
 				if (note_off && note_reg[mchannel] == note) begin
-					if (!sustain[mchannel]) begin 
+					if (!sustain[mchannel]) begin
 						note_on_reg[mchannel] <= 0;
 						note_switch <= 0;
 					end
@@ -327,7 +327,7 @@ always @ (posedge clk) begin
 			end
 			else if (pb_send) begin
 				pb_count[mchannel] <= pb_count[mchannel] + 'b1;
-				pb_reg[mchannel] <= pb_val>>5; 
+				pb_reg[mchannel] <= pb_val>>5;
 			end
 		end
 		else begin
@@ -412,7 +412,7 @@ always @ (posedge clk) begin
 						disable vcheck;
 					end
 				end
-				
+
 			end
 			if (note_off) begin
 				for (int ii = 0; ii < max+max; ii = ii + 1) begin: ncheck
@@ -448,7 +448,7 @@ always @ (posedge clk) begin
 		end
 		else if (pb_send) begin
 			pb_count[mchannel] <= pb_count[mchannel] + 'b1;
-			pb_reg[mchannel] <= pb_val>>5; 
+			pb_reg[mchannel] <= pb_val>>5;
 		end
 	end
 
@@ -549,7 +549,7 @@ always @ (posedge clk) begin
 				sq1_duty <= duty_set;
 				sq1_duty_sent <= 0;
 			end
-			
+
 			///2nd pulse
 			if (echo_en) begin
 				note_on_reg[sq2_channel] <= echo_note_on_reg;
@@ -674,7 +674,7 @@ always @ (posedge clk) begin
 				for (int ii = 0; ii < max; ii = ii + 1) begin
 					//poly_note_out_reg[32*(ii+1)-1:32*ii] <= (poly_note_on_reg[sq1_channel][ii+ii+1]<<25) + ((poly_note_reg[sq1_channel][ii+ii+1]-36)<<16) + (poly_note_on_reg[sq1_channel][ii+ii]<<9) + (poly_note_reg[sq1_channel][ii+ii]-36);
 					//poly_note_out_reg <= poly_note_out_reg + (poly_note_on_reg[sq1_channel][ii+ii+1]<<((16*(ii+ii+1))+9)) + ((poly_note_reg[sq1_channel][ii+ii+1]-36)<<(16*(ii+ii+1))) + (poly_note_on_reg[sq1_channel][ii+ii]<<((16*(ii+ii))+9)) + ((poly_note_reg[sq1_channel][ii+ii]-36)<<(16*(ii+ii)));
-					if (poly_note_on_reg[sq1_channel][ii+ii]) begin 
+					if (poly_note_on_reg[sq1_channel][ii+ii]) begin
 						if (!sq1_onP[ii]) begin
 							if (pb_count[sq1_channel] && ((pb_reg[sq1_channel] > 'd256) || (pb_reg[sq1_channel] < 'd256))) begin
 								poly_pb_lookup[sq1_channel][ii+ii] <= ((poly_note_reg[sq1_channel][ii+ii]-36-2)*pb_div)+pb_reg[sq1_channel]; //map function used to make LUT: (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
@@ -901,7 +901,7 @@ always @ (posedge clk) begin
 				'd2 : begin
 					if (!audio_wr) begin
 						if (!sq1_sent) begin
-							myaddress <= 7'h14; //NR14 FF14 TL-- -FFF Trigger, Length enable, Frequency MSB 
+							myaddress <= 7'h14; //NR14 FF14 TL-- -FFF Trigger, Length enable, Frequency MSB
 							if (!sq1_trig) begin
 								myvalue <= sq1_freq[10:8];
 								sq1_trig <= 1;
@@ -912,7 +912,7 @@ always @ (posedge clk) begin
 							audio_wr <= 1;
 						end
 						else if (!sq2_sent) begin
-							myaddress <= 7'h19; //NR24 FF19 TL-- -FFF Trigger, Length enable, Frequency MSB 
+							myaddress <= 7'h19; //NR24 FF19 TL-- -FFF Trigger, Length enable, Frequency MSB
 							if (!sq2_trig) begin
 								myvalue <= sq2_freq[10:8];
 								sq2_trig <= 1;
@@ -992,7 +992,7 @@ always @ (posedge clk) begin
 						'd2 : begin
 							if (!audio_wrP[ii]) begin
 								if (!sq1_sentP[ii]) begin
-									myaddressP[ii] <= 7'h14; //NR14 FF14 TL-- -FFF Trigger, Length enable, Frequency MSB 
+									myaddressP[ii] <= 7'h14; //NR14 FF14 TL-- -FFF Trigger, Length enable, Frequency MSB
 									if (!sq1_trigP[ii]) begin
 										myvalueP[ii] <= sq1_freqP[ii][10:8];
 										sq1_trigP[ii] <= 1;
@@ -1003,7 +1003,7 @@ always @ (posedge clk) begin
 									audio_wrP[ii] <= 1;
 								end
 								else if (!sq2_sentP[ii]) begin
-									myaddressP[ii] <= 7'h19; //NR24 FF19 TL-- -FFF Trigger, Length enable, Frequency MSB 
+									myaddressP[ii] <= 7'h19; //NR24 FF19 TL-- -FFF Trigger, Length enable, Frequency MSB
 									if (!sq2_trigP[ii]) begin
 										myvalueP[ii] <= sq2_freqP[ii][10:8];
 										sq2_trigP[ii] <= 1;
@@ -1137,14 +1137,14 @@ blip_gen blip_gen2 (
 	.blip_out (blip[sq2_channel])
 );
 
-wire[15:0] audio_l1; 
+wire[15:0] audio_l1;
 wire[15:0] audio_r1;
 
 gbc_snd audio (
 	.clk			(clk),
 	.ce             (ce_2x),
 	.reset			(reset),
-	
+
 	.is_gbc         (0),
 
 	.s1_read  		(0),
@@ -1162,7 +1162,7 @@ reg[8:0] poly_vib[0:15][0:max+max-1];
 reg[1:0] poly_duty_switch_reg[0:15][0:max+max-1];
 reg[3:0] poly_blip[0:15][0:max+max-1];
 
-wire[15:0] audio_lP[0:max-1]; 
+wire[15:0] audio_lP[0:max-1];
 wire[15:0] audio_rP[0:max-1];
 wire[15:0] audio_combined_l[0:max];
 wire[15:0] audio_combined_r[0:max];
@@ -1254,7 +1254,7 @@ generate
 			.clk			(clk),
 			.ce             (ce_2x),
 			.reset			(reset),
-			
+
 			.is_gbc         (0),
 
 			.s1_read  		(0),
@@ -1285,6 +1285,7 @@ generate
 		);
 	end
 endgenerate
+
 assign audio_l = audio_l1 + audio_combined_l[max];
 assign audio_r = audio_r1 + audio_combined_r[max];
 

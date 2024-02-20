@@ -1,6 +1,6 @@
 /*============================================================================
 	UART to Midi Message Translation module
-	
+
 	Aruthor: ModalModule - https://github.com/modalmodule/
 	Version: 0.1
 	Date: 2024-02-19
@@ -134,7 +134,7 @@ always @ (posedge clk) begin
             end
         endcase
     end
-    if (midi_packet >= 2'd3) begin 
+    if (midi_packet >= 2'd3) begin
         midi_packet <= 0;
         note_on_send_reg <= note_on_reg;
         note_off_send_reg <= note_off_reg;

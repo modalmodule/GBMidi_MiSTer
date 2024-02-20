@@ -20,8 +20,8 @@ TARGETS=( verilator rtl )
 
 # Hexify rom and font and copy to build targets
 for TARGET in "${TARGETS[@]}"; do
-od -An -t x1 -v src/$PROJECT/bin/rom.bin > $TARGET/rom.hex
-od -An -t x1 -v font.pf > $TARGET/font.hex
+od -An -t x1 -v src/$PROJECT/bin/rom.bin > $TARGET/Aznable/rom.hex
+od -An -t x1 -v font.pf > $TARGET/Aznable/font.hex
 done
 
 # Hexify resource binarys and copy to build targets
@@ -30,7 +30,7 @@ for RESOURCE in "${RESOURCES[@]}"; do
 if [ -r "resources/$PROJECT/$RESOURCE.bin" ]; then
 echo "Updating resources/$PROJECT/$RESOURCE.bin"
 for TARGET in "${TARGETS[@]}"; do
-od -An -t x1 -v resources/$PROJECT/$RESOURCE.bin > $TARGET/$RESOURCE.hex
+od -An -t x1 -v resources/$PROJECT/$RESOURCE.bin > $TARGET/Aznable/$RESOURCE.hex
 done
 fi
 done
