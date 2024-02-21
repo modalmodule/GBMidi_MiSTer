@@ -21,20 +21,21 @@
 
 module envelope
 (
-    input clk,
-    input en,
-    input[3:0] decay,
-    input note_on,
-    input note_repeat,
-    input[6:0] note_start,
-    input[6:0] vel_start,
-    output[6:0] adjusted_vel
+    input        clk,
+    input        en,
+    input  [3:0] decay,
+    input        note_on,
+    input        note_repeat,
+    input  [6:0] note_start,
+    input  [6:0] vel_start,
+    output [6:0] adjusted_vel
 );
-reg[25:0] timer = 'b1;
+
+reg [25:0] timer = 'b1;
 reg started;
 reg note_repeat_reg;
-reg[6:0] note_reg;
-reg[6:0] adjusted_vel_reg;
+reg [6:0] note_reg;
+reg [6:0] adjusted_vel_reg;
 assign adjusted_vel = adjusted_vel_reg;
 
 always @ (posedge clk) begin

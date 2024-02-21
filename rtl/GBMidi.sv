@@ -21,37 +21,25 @@
 
 module GBMidi
 (
-	input         clk,
-	input         ce,
-	input         ce_2x,
-	input         reset,
-	input [127:0]      status,
+    input          clk,
+    input          ce,
+    input          ce_2x,
+    input          reset,
+    input  [127:0] status,
 
-	// input         pal,
-	// input         scandouble,
+    input   [15:0] joystick_0,
 
-	// output reg    ce_pix,
+    input    [7:0] midi_data,
+    input          midi_send,
+    output         midi_ready,
 
-	// output reg    HBlank,
-	// output reg    HSync,
-	// output reg    VBlank,
-	// output reg    VSync,
+    output  [10:0] note_out,
+    output  [10:0] note_out2,
+    output [255:0] poly_note_out,
 
-	// output  [7:0] video,
-
-	input [15:0] joystick_0,
-
-	input [7:0] midi_data, //[7:0]
-	input midi_send,
-	output midi_ready,
-
-	output [10:0] note_out,
-	output [10:0] note_out2,
-	output [255:0] poly_note_out,
-
-	// audio
-	output [15:0] audio_l,
-	output [15:0] audio_r
+    // audio
+    output  [15:0] audio_l,
+    output  [15:0] audio_r
 );
 
 /*reg   [9:0] hc;
@@ -125,11 +113,11 @@ assign poly_note_out = poly_note_out_combined[max];
 //reg[255:0] poly_note_out_reg;
 
 //OSD labels
-wire[1:0] duty_set = status[6:5];
+wire [1:0] duty_set = status[6:5];
 wire modtoDuty = status[13];
 wire auto_poly = status[7];
 wire fade_en = status[8];
-wire[3:0] fade_speed = status[12:9];
+wire [3:0] fade_speed = status[12:9];
 wire gamepadtoNotes = status[3];
 wire vibrato = status[14];
 wire duty_switch_en = status[15];
@@ -140,14 +128,14 @@ wire blip_en = status[17];
 //Midi translator//
 wire note_on;
 wire note_off;
-wire[3:0] mchannel;
-wire[6:0] note;
-wire[6:0] velocity;
+wire [3:0] mchannel;
+wire [6:0] note;
+wire [6:0] velocity;
 wire cc_send;
-wire[6:0] cc;
-wire[6:0] cc_val;
+wire [6:0] cc;
+wire [6:0] cc_val;
 wire pb_send;
-wire[13:0] pb_val;
+wire [13:0] pb_val;
 
 midi_trans midi_trans (
 	.clk(clk),
@@ -178,13 +166,13 @@ reg[10:0] frequencies[0:71] = '{
 
 wire [7:0] snd_d_out;
 reg audio_wr;
-reg[6:0] myaddress;
-reg[7:0] myvalue;
-reg[2:0] myseq = 3'b000;
-reg[10:0] sq1_freq = 11'b11010011110;
-reg[10:0] sq2_freq = 11'b11010011110;
-reg[1:0] sq1_duty;
-reg[1:0] sq2_duty;
+reg [6:0] myaddress;
+reg [7:0] myvalue;
+reg [2:0] myseq = 3'b000;
+reg [10:0] sq1_freq = 11'b11010011110;
+reg [10:0] sq2_freq = 11'b11010011110;
+reg [1:0] sq1_duty;
+reg [1:0] sq2_duty;
 reg sq1_on;
 reg sq2_on;
 reg sq1_sent = 1;
@@ -193,21 +181,21 @@ reg sq1_duty_sent = 1;
 reg sq2_duty_sent = 1;
 reg sq1_trig = 1;
 reg sq2_trig = 1;
-reg[10:0] freq_temp;
-reg[10:0] sq1_freq_pb;
-reg[10:0] sq2_freq_pb;
+reg [10:0] freq_temp;
+reg [10:0] sq1_freq_pb;
+reg [10:0] sq2_freq_pb;
 
 
 //POLY
 localparam int max = 8; //Max instances of gbc_snd
 reg audio_wrP[0:max-1];
-reg[6:0] myaddressP[0:max-1];
-reg[7:0] myvalueP[0:max-1];
-reg[2:0] myseqP[0:max-1];
-reg[10:0] sq1_freqP[0:max-1];
-reg[10:0] sq2_freqP[0:max-1];
-reg[1:0] sq1_dutyP[0:max-1];
-reg[1:0] sq2_dutyP[0:max-1];
+reg [6:0] myaddressP[0:max-1];
+reg [7:0] myvalueP[0:max-1];
+reg [2:0] myseqP[0:max-1];
+reg [10:0] sq1_freqP[0:max-1];
+reg [10:0] sq2_freqP[0:max-1];
+reg [1:0] sq1_dutyP[0:max-1];
+reg [1:0] sq2_dutyP[0:max-1];
 reg sq1_onP[0:max-1];
 reg sq2_onP[0:max-1];
 reg sq1_sentP[0:max-1];
@@ -217,43 +205,43 @@ reg sq2_duty_sentP[0:max-1];
 reg Pinit;
 reg sq1_trigP[0:max-1];
 reg sq2_trigP[0:max-1];
-reg[10:0] sq1_freq_pbP[0:max-1];
-reg[10:0] sq2_freq_pbP[0:max-1];
+reg [10:0] sq1_freq_pbP[0:max-1];
+reg [10:0] sq2_freq_pbP[0:max-1];
 
 //GAMEPAD
-reg[3:0] last_joy = 8;
+reg [3:0] last_joy = 8;
 
 //MIDI REGS
 reg note_switch;
 localparam int sq1_channel = 0; // midi channel for pulse 1, 0 = channel 1
 localparam int sq2_channel = 1; // midi channel for pulse 2, 1 = channel 2
 reg note_on_reg[0:15];
-reg[6:0] note_reg[0:15];
-reg[3:0] velocity_reg[0:15];
+reg [6:0] note_reg[0:15];
+reg [3:0] velocity_reg[0:15];
 reg sustain[0:15];
 reg note_sus_on[0:15];
-reg[1:0] cc1_reg[0:15];
-reg[8:0] pb_reg[0:15];
-reg[8:0] pb_old_reg[0:15];
-reg[3:0] pb_count[0:15];
-reg[13:0] pb_lookup[0:15];
+reg [1:0] cc1_reg[0:15];
+reg [8:0] pb_reg[0:15];
+reg [8:0] pb_old_reg[0:15];
+reg [3:0] pb_count[0:15];
+reg [13:0] pb_lookup[0:15];
 localparam int pb_div = 128; //pitch bend values divide a half step by 128
 
-reg[6:0] note_tmp;
-reg[6:0] velocity_tmp;
-reg[3:0] channel_tmp;
+reg [6:0] note_tmp;
+reg [6:0] velocity_tmp;
+reg [3:0] channel_tmp;
 
 //POLY
 reg poly_note_on_reg[0:15][0:max+max-1];
 reg poly_repeat_note[0:15][0:max+max-1];
-reg[6:0] poly_note_reg[0:15][0:max+max-1];
-reg[3:0] poly_velocity_reg[0:15][0:max+max-1];
+reg [6:0] poly_note_reg[0:15][0:max+max-1];
+reg [3:0] poly_velocity_reg[0:15][0:max+max-1];
 reg poly_note_sus_on[0:15][0:max+max-1];
-reg[4:0] poly_max_voice = max+max-'b1;
-reg[4:0] poly_replace;
-reg[4:0] poly_cvoice;
+reg [4:0] poly_max_voice = max+max-'b1;
+reg [4:0] poly_replace;
+reg [4:0] poly_cvoice;
 reg vfound;
-reg[13:0] poly_pb_lookup[0:15][0:max+max-1];
+reg [13:0] poly_pb_lookup[0:15][0:max+max-1];
 
 reg midi_ready_reg = 1;
 assign midi_ready = midi_ready_reg;
@@ -1040,7 +1028,7 @@ always @ (posedge clk) begin
 	end
 end
 
-reg[3:0] adjusted_vel[0:15];
+reg [3:0] adjusted_vel[0:15];
 envelope envelope (
 	.clk			(clk),
 	.en (fade_en),
@@ -1071,7 +1059,7 @@ midipb_to_gbfreq_LUT midipb_to_gbfreq_LUT2 (
 	.q (sq2_freq_pb)
 );
 
-reg[8:0] vib[0:15];
+reg [8:0] vib[0:15];
 vibrato_gen vibrato_gen (
 	.en (vibrato),
 	.clk (clk),
@@ -1087,7 +1075,7 @@ vibrato_gen vibrato_gen2 (
 	.vib_out (vib[sq2_channel])
 );
 
-reg[1:0] duty_switch_reg[0:15];
+reg [1:0] duty_switch_reg[0:15];
 duty_switch duty_switch (
 	.en (duty_switch_en),
 	.clk (clk),
@@ -1104,10 +1092,10 @@ duty_switch duty_switch2 (
 );
 
 reg echo_note_on_reg;
-reg[6:0] echo_note_reg;
-reg[3:0] echo_velocity_reg;
-reg[3:0] echo_prev_vel_reg;
-reg[8:0] echo_pb_reg;
+reg [6:0] echo_note_reg;
+reg [3:0] echo_velocity_reg;
+reg [3:0] echo_prev_vel_reg;
+reg [8:0] echo_pb_reg;
 echo_gen echo_gen (
 	.en (echo_en),
 	.clk (clk),
@@ -1121,7 +1109,7 @@ echo_gen echo_gen (
 	.echo_pb (echo_pb_reg)
 );
 
-reg[3:0] blip[0:15];
+reg [3:0] blip[0:15];
 blip_gen blip_gen (
 	.en (blip_en),
 	.clk (clk),
@@ -1137,8 +1125,8 @@ blip_gen blip_gen2 (
 	.blip_out (blip[sq2_channel])
 );
 
-wire[15:0] audio_l1;
-wire[15:0] audio_r1;
+wire [15:0] audio_l1;
+wire [15:0] audio_r1;
 
 gbc_snd audio (
 	.clk			(clk),
@@ -1157,17 +1145,17 @@ gbc_snd audio (
 	.snd_right  	(audio_r1)
 );
 
-reg[3:0] poly_adjusted_vel[0:15][0:max+max-1];
-reg[8:0] poly_vib[0:15][0:max+max-1];
-reg[1:0] poly_duty_switch_reg[0:15][0:max+max-1];
-reg[3:0] poly_blip[0:15][0:max+max-1];
+reg [3:0] poly_adjusted_vel[0:15][0:max+max-1];
+reg [8:0] poly_vib[0:15][0:max+max-1];
+reg [1:0] poly_duty_switch_reg[0:15][0:max+max-1];
+reg [3:0] poly_blip[0:15][0:max+max-1];
 
-wire[15:0] audio_lP[0:max-1];
-wire[15:0] audio_rP[0:max-1];
-wire[15:0] audio_combined_l[0:max];
-wire[15:0] audio_combined_r[0:max];
+wire [15:0] audio_lP[0:max-1];
+wire [15:0] audio_rP[0:max-1];
+wire [15:0] audio_combined_l[0:max];
+wire [15:0] audio_combined_r[0:max];
 
-wire[255:0] poly_note_out_combined[0:max];
+wire [255:0] poly_note_out_combined[0:max];
 
 generate
 	genvar ii;
@@ -1275,6 +1263,7 @@ generate
 			.ac_r_out (audio_combined_r[ii+1])
 		);
 		poly_disp poly_disp (
+			.clk(clk),
 			.sq1_no_in (poly_note_on_reg[sq1_channel][ii+ii]),
 			.sq2_no_in (poly_note_on_reg[sq1_channel][ii+ii+1]),
 			.sq1_n_in (poly_note_reg[sq1_channel][ii+ii]),

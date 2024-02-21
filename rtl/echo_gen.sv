@@ -19,19 +19,21 @@
 	with this program. If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================*/
 
-module echo_gen (
-    input en,
-    input clk,
-    input note_on,
-    input note_repeat,
-    input[6:0] note_start,
-    input[3:0] vel_start,
-    input[8:0] pb_start,
-    output echo_on,
-    output[6:0] echo_note,
-    output[3:0] echo_vel,
-    output[8:0] echo_pb
+module echo_gen
+(
+    input        en,
+    input        clk,
+    input        note_on,
+    input        note_repeat,
+    input  [6:0] note_start,
+    input  [3:0] vel_start,
+    input  [8:0] pb_start,
+    output       echo_on,
+    output [6:0] echo_note,
+    output [3:0] echo_vel,
+    output [8:0] echo_pb
 );
+
 reg note_repeat_reg;
 reg[6:0] note_reg[0:15];
 reg[6:0] note_temp;

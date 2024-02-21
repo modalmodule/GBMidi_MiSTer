@@ -19,14 +19,16 @@
 	with this program. If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================*/
 
-module blip_gen (
-    input en,
-    input clk,
-    input note_on,
-    input note_repeat,
-    input[6:0] note_start,
-    output[3:0] blip_out
+module blip_gen
+(
+    input        en,
+    input        clk,
+    input        note_on,
+    input        note_repeat,
+    input  [6:0] note_start,
+    output [3:0] blip_out
 );
+
 reg note_repeat_reg;
 reg[6:0] note_reg;
 reg[3:0] blip_out_reg;

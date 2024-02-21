@@ -19,14 +19,16 @@
 	with this program. If not, see <http://www.gnu.org/licenses/>.
 ===========================================================================*/
 
-module duty_switch (
-    input en,
-    input clk,
-    input note_on,
-    input note_repeat,
-    input[6:0] note_start,
-    output[1:0] duty_out
+module duty_switch
+(
+    input        en,
+    input        clk,
+    input        note_on,
+    input        note_repeat,
+    input  [6:0] note_start,
+    output [1:0] duty_out
 );
+
 reg note_repeat_reg;
 reg[6:0] note_reg;
 reg[1:0] duty_out_reg = 'd12;
