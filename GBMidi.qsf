@@ -55,8 +55,9 @@ set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS OFF
 set_global_assignment -name OPTIMIZE_POWER_DURING_FITTING OFF
 set_global_assignment -name FINAL_PLACEMENT_OPTIMIZATION ALWAYS
 set_global_assignment -name FITTER_EFFORT "STANDARD FIT"
-set_global_assignment -name OPTIMIZATION_MODE "HIGH PERFORMANCE EFFORT"
-set_global_assignment -name QII_AUTO_PACKED_REGISTERS NORMAL
+set_global_assignment -name OPTIMIZATION_MODE "AGGRESSIVE PERFORMANCE"
+set_global_assignment -name ALLOW_POWER_UP_DONT_CARE ON
+set_global_assignment -name QII_AUTO_PACKED_REGISTERS "SPARSE AUTO"
 set_global_assignment -name ROUTER_LCELL_INSERTION_AND_LOGIC_DUPLICATION ON
 set_global_assignment -name PHYSICAL_SYNTHESIS_COMBO_LOGIC ON
 set_global_assignment -name PHYSICAL_SYNTHESIS_REGISTER_DUPLICATION ON
@@ -73,6 +74,10 @@ set_global_assignment -name ROUTER_CLOCKING_TOPOLOGY_ANALYSIS ON
 set_global_assignment -name ECO_OPTIMIZE_TIMING ON
 set_global_assignment -name PERIPHERY_TO_CORE_PLACEMENT_AND_ROUTING_OPTIMIZATION ON
 set_global_assignment -name PHYSICAL_SYNTHESIS_ASYNCHRONOUS_SIGNAL_PIPELINING ON
+set_global_assignment -name ALM_REGISTER_PACKING_EFFORT LOW
+set_global_assignment -name PLACEMENT_EFFORT_MULTIPLIER 4.0
+set_global_assignment -name PHYSICAL_SYNTHESIS_EFFORT EXTRA
+set_global_assignment -name SEED 1
 
 set_global_assignment -name VERILOG_MACRO "MISTER_FB=1"
 
@@ -84,21 +89,39 @@ set_global_assignment -name VERILOG_MACRO "MISTER_FB=1"
 #do not enable DEBUG_NOHDMI in release!
 #set_global_assignment -name VERILOG_MACRO "MISTER_DEBUG_NOHDMI=1"
 
+# disable bilinear filtering when downscaling
+#set_global_assignment -name VERILOG_MACRO "MISTER_DOWNSCALE_NN=1"
+
+# disable adaptive scanline filtering
+#set_global_assignment -name VERILOG_MACRO "MISTER_DISABLE_ADAPTIVE=1"
+
+#use only 1MB per frame for scaler to free ~21MB DDR3 RAM
+#set_global_assignment -name VERILOG_MACRO "MISTER_SMALL_VBUF=1"
+
+# Disable YC / Composite output to save some resources
+#set_global_assignment -name VERILOG_MACRO "MISTER_DISABLE_YC=1"
+
+# Disable ALSA audio output to save some resources
+#set_global_assignment -name VERILOG_MACRO "MISTER_DISABLE_ALSA=1"
+
 # Aznable specific defines
 # ------------------------
 #set_global_assignment -name VERILOG_MACRO "DISABLE_CPU=1"
 #set_global_assignment -name VERILOG_MACRO "DISABLE_CHARMAP=1"
 #set_global_assignment -name VERILOG_MACRO "DISABLE_SPRITES=1"
 #set_global_assignment -name VERILOG_MACRO "DISABLE_TILEMAP=1"
-#set_global_assignment -name VERILOG_MACRO "DISABLE_MUSIC=1"
-#set_global_assignment -name VERILOG_MACRO "DISABLE_SOUND=1"
-#set_global_assignment -name VERILOG_MACRO "DISABLE_STARS_2=1"
-#set_global_assignment -name VERILOG_MACRO "DISABLE_STARS_3=1"
+set_global_assignment -name VERILOG_MACRO "DISABLE_MUSIC=1"
+set_global_assignment -name VERILOG_MACRO "DISABLE_SOUND=1"
+set_global_assignment -name VERILOG_MACRO "DISABLE_STARS_2=1"
+set_global_assignment -name VERILOG_MACRO "DISABLE_STARS_3=1"
 #set_global_assignment -name VERILOG_MACRO "DEBUG_SPRITE_COLLISION=1"
 
 source sys/sys.tcl
 source sys/sys_analog.tcl
 source files.qip
+
+# Signaltap - KEEP THIS
+# ---------------------
 set_global_assignment -name ENABLE_SIGNALTAP ON
 set_global_assignment -name USE_SIGNALTAP_FILE output_files/stp1.stp
 set_global_assignment -name SIGNALTAP_FILE output_files/stp1.stp
@@ -675,4 +698,5 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[22] -
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[24] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
+
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

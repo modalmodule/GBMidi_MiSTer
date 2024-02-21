@@ -1,16 +1,39 @@
-module echo_gen (
-    input en,
-    input clk,
-    input note_on,
-    input note_repeat,
-    input[6:0] note_start,
-    input[3:0] vel_start,
-    input[8:0] pb_start,
-    output echo_on,
-    output[6:0] echo_note,
-    output[3:0] echo_vel,
-    output[8:0] echo_pb
+/*============================================================================
+	Game Boy Midi Core - Echo Generator module
+
+	Aruthor: ModalModule - https://github.com/modalmodule/
+	Version: 0.1
+	Date: 2024-02-19
+
+	This program is free software; you can redistribute it and/or modify it
+	under the terms of the GNU General Public License as published by the Free
+	Software Foundation; either version 3 of the License, or (at your option)
+	any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License along
+	with this program. If not, see <http://www.gnu.org/licenses/>.
+===========================================================================*/
+
+module echo_gen
+(
+    input        en,
+    input        clk,
+    input        note_on,
+    input        note_repeat,
+    input  [6:0] note_start,
+    input  [3:0] vel_start,
+    input  [8:0] pb_start,
+    output       echo_on,
+    output [6:0] echo_note,
+    output [3:0] echo_vel,
+    output [8:0] echo_pb
 );
+
 reg note_repeat_reg;
 reg[6:0] note_reg[0:15];
 reg[6:0] note_temp;

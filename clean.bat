@@ -36,4 +36,6 @@ del *.cdf
 del *.rpt
 del /s new_rtl_netlist
 del /s old_rtl_netlist
+del *.qarlog
+del cr_ie_info.json
 pause

@@ -1,6 +1,6 @@
 /*============================================================================
 	UART to Midi Message Translation module
-	
+
 	Aruthor: ModalModule - https://github.com/modalmodule/
 	Version: 0.1
 	Date: 2024-02-19
@@ -21,40 +21,41 @@
 
 module midi_trans
 (
-    input clk,
-    input reset,
-    input midi_send,
-    input[7:0] midi_data,
-    output note_on,
-    output note_off,
-    output[3:0] mchannel,
-    output[6:0] note,
-    output[6:0] velocity,
-    output cc_send,
-    output[6:0] cc,
-    output[6:0] cc_val,
-    output pb_send,
-    output[13:0] pb_val
+    input         clk,
+    input         reset,
+    input         midi_send,
+    input   [7:0] midi_data,
+    output        note_on,
+    output        note_off,
+    output  [3:0] mchannel,
+    output  [6:0] note,
+    output  [6:0] velocity,
+    output        cc_send,
+    output  [6:0] cc,
+    output  [6:0] cc_val,
+    output        pb_send,
+    output [13:0] pb_val
 );
-reg[1:0] midi_packet;
+
+reg [1:0] midi_packet;
 reg note_on_reg;
 reg note_off_reg;
-reg[3:0] channel_reg;
-reg[6:0] note_reg;
-reg[6:0] velocity_reg;
+reg [3:0] channel_reg;
+reg [6:0] note_reg;
+reg [6:0] velocity_reg;
 reg note_on_send_reg;
 reg note_off_send_reg;
 reg iscc;
-reg[6:0] cc_reg;
-reg[6:0] cc_val_reg;
+reg [6:0] cc_reg;
+reg [6:0] cc_val_reg;
 reg cc_send_reg;
 reg ispb;
-reg[6:0] pb_lsb;
-reg[6:0] pb_msb = 7'b1000000;
-reg[13:0] pb_reg;
+reg [6:0] pb_lsb;
+reg [6:0] pb_msb = 7'b1000000;
+reg [13:0] pb_reg;
 reg pb_send_reg;
 reg init;
-reg[25:0] timer = 'b1;
+reg [25:0] timer = 'b1;
 
 assign mchannel = channel_reg;
 assign note = note_reg;
@@ -134,7 +135,7 @@ always @ (posedge clk) begin
             end
         endcase
     end
-    if (midi_packet >= 2'd3) begin 
+    if (midi_packet >= 2'd3) begin
         midi_packet <= 0;
         note_on_send_reg <= note_on_reg;
         note_off_send_reg <= note_off_reg;

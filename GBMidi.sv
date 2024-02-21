@@ -1,7 +1,12 @@
 
 /*============================================================================
-	Input Test - emu module
+	Game Boy Midi Core - emu module
 
+	Aruthor: ModalModule - https://github.com/modalmodule/
+	Version: 0.1
+	Date: 2024-02-19
+
+	Based on aznable/InputTest core
 	Author: Jim Gregory - https://github.com/JimmyStones/
 	Version: 1.1
 	Date: 2021-12-22
@@ -30,7 +35,7 @@ module emu
 	input         RESET,
 
 	//Must be passed to hps_io module
-	inout  [47:0] HPS_BUS,
+	inout  [48:0] HPS_BUS,
 
 	//Base video clock. Usually equals to CLK_SYS.
 	output        CLK_VIDEO,
@@ -53,13 +58,14 @@ module emu
 	output        VGA_F1,
 	output [1:0]  VGA_SL,
 	output        VGA_SCALER, // Force VGA scaler
+	output        VGA_DISABLE, // analog out is off
 
 	input  [11:0] HDMI_WIDTH,
 	input  [11:0] HDMI_HEIGHT,
 	output        HDMI_FREEZE,
 
 `ifdef MISTER_FB
-	// Use framebuffer in DDRAM (USE_FB=1 in qsf)
+	// Use framebuffer in DDRAM
 	// FB_FORMAT:
 	//    [2:0] : 011=8bpp(palette) 100=16bpp 101=24bpp 110=32bpp
 	//    [3]   : 0=16bits 565 1=16bits 1555
@@ -179,14 +185,15 @@ module emu
 assign ADC_BUS  = 'Z;
 assign USER_OUT = '1;
 assign {UART_RTS, UART_DTR} = 1; //UART_TXD,
+assign UART_TXD = 0; // not driven currently
 assign {SD_SCK, SD_MOSI, SD_CS} = 'Z;
 assign {SDRAM_DQ, SDRAM_A, SDRAM_BA, SDRAM_CLK, SDRAM_CKE, SDRAM_DQML, SDRAM_DQMH, SDRAM_nWE, SDRAM_nCAS, SDRAM_nRAS, SDRAM_nCS} = 'Z;
 assign FB_FORCE_BLANK = 0;
 assign VGA_F1 = 0;
 assign VGA_SCALER = 0;
 assign HDMI_FREEZE = 0;
+assign VGA_DISABLE = 0;
 
-//assign AUDIO_S = 1;
 assign AUDIO_MIX = 0;
 
 assign LED_DISK = 0;
@@ -210,11 +217,11 @@ localparam CONF_STR = {
 	"D3D4O[6:5],Duty Cycle,12.5,25,50;",
 	"D4O[13],Duty ctrld by ModWheel,Off,On;",
 	"O[15],Auto-Duty,Off,On;",
-	"O[14],Vibrato,Off,On;",  //0111000011000 17:5 < example patch   
+	"O[14],Vibrato,Off,On;",  //0111000011000 17:5 < example patch
 	"O[17],Blip,Off,On;",
 	"D1O[8],Fade Out,Off,On;",
 	"d2O[12:9], Fade Speed,0,1,2,3,4,5,6,7,8,9;",
-	"O[16],Echo,Off,On;",  
+	"O[16],Echo,Off,On;",
 	"D1D5O[7],Auto-Polyphony,Off,On;",
 	"-;",
 	"F0,BIN,Load BIOS;",
@@ -227,7 +234,7 @@ localparam CONF_STR = {
 	"-;",
 	"O6,Rotate video,Off,On;",
 	"O7,Flip video,Off,On;",
-	"-;",	
+	"-;",
 	"RA,Open menu;",
 	"-;",
 	"F0,BIN,Load BIOS;",
@@ -252,35 +259,8 @@ wire  [7:0] ioctl_dout;
 wire  [7:0] ioctl_index;
 
 wire [31:0] joystick_0;
-wire [31:0] joystick_1;
-wire [31:0] joystick_2;
-wire [31:0] joystick_3;
-wire [31:0] joystick_4;
-wire [31:0] joystick_5;
 wire [15:0] joystick_l_analog_0;
-wire [15:0] joystick_l_analog_1;
-wire [15:0] joystick_l_analog_2;
-wire [15:0] joystick_l_analog_3;
-wire [15:0] joystick_l_analog_4;
-wire [15:0] joystick_l_analog_5;
 wire [15:0] joystick_r_analog_0;
-wire [15:0] joystick_r_analog_1;
-wire [15:0] joystick_r_analog_2;
-wire [15:0] joystick_r_analog_3;
-wire [15:0] joystick_r_analog_4;
-wire [15:0] joystick_r_analog_5;
-wire  [7:0] paddle_0;
-wire  [7:0] paddle_1;
-wire  [7:0] paddle_2;
-wire  [7:0] paddle_3;
-wire  [7:0] paddle_4;
-wire  [7:0] paddle_5;
-wire  [8:0] spinner_0;
-wire  [8:0] spinner_1;
-wire  [8:0] spinner_2;
-wire  [8:0] spinner_3;
-wire  [8:0] spinner_4;
-wire  [8:0] spinner_5;
 wire [10:0] ps2_key;
 wire [24:0] ps2_mouse;
 wire [15:0] ps2_mouse_ext;
@@ -288,7 +268,7 @@ wire [32:0] timestamp;
 
 //blip, echo, auto-duty, vib, cc1>duty, fade speed (4), fade_en, auto-poly, set duty (2)
 reg[12:0] lead_patch = 'b0111000011000;
-reg[12:0] pad_patch = 'b0000000011101;
+reg[12:0] pad_patch  = 'b0000000011101;
 reg[12:0] blip_patch = 'b1100010011010;
 reg[12:0] patch;
 reg patch_set;
@@ -322,6 +302,9 @@ hps_io #(.CONF_STR(CONF_STR)) hps_io
 (
 	.clk_sys(clk_sys),
 	.HPS_BUS(HPS_BUS),
+	.EXT_BUS(),
+	.gamma_bus(),
+
 	.buttons(buttons),
 	.status(status),
 	.status_in ({status[31:18], patch, status[4:0]}),
@@ -338,39 +321,10 @@ hps_io #(.CONF_STR(CONF_STR)) hps_io
 	.ioctl_index(ioctl_index),
 
 	.joystick_0(joystick_0),
-	.joystick_1(joystick_1),
-	.joystick_2(joystick_2),
-	.joystick_3(joystick_3),
-	.joystick_4(joystick_4),
-	.joystick_5(joystick_5),
 
 	.joystick_l_analog_0(joystick_l_analog_0),
-	.joystick_l_analog_1(joystick_l_analog_1),
-	.joystick_l_analog_2(joystick_l_analog_2),
-	.joystick_l_analog_3(joystick_l_analog_3),
-	.joystick_l_analog_4(joystick_l_analog_4),
-	.joystick_l_analog_5(joystick_l_analog_5),
-	
+
 	.joystick_r_analog_0(joystick_r_analog_0),
-	.joystick_r_analog_1(joystick_r_analog_1),
-	.joystick_r_analog_2(joystick_r_analog_2),
-	.joystick_r_analog_3(joystick_r_analog_3),
-	.joystick_r_analog_4(joystick_r_analog_4),
-	.joystick_r_analog_5(joystick_r_analog_5),
-
-	.paddle_0(paddle_0),
-	.paddle_1(paddle_1),
-	.paddle_2(paddle_2),
-	.paddle_3(paddle_3),
-	.paddle_4(paddle_4),
-	.paddle_5(paddle_5),
-
-	.spinner_0(spinner_0),
-	.spinner_1(spinner_1),
-	.spinner_2(spinner_2),
-	.spinner_3(spinner_3),
-	.spinner_4(spinner_4),
-	.spinner_5(spinner_5),
 
 	.ps2_key(ps2_key),
 	.ps2_mouse(ps2_mouse),
@@ -389,24 +343,30 @@ pll pll
 	.outclk_0(clk_sys)
 );
 
-///////////////////   CLOCK DIVIDER   ////////////////////
-wire ce_pix;
-wire ce_2;
-jtframe_cen24 divider
-(
-	.clk(clk_sys),
-	.cen6(ce_pix),
-	.cen2(ce_2)
-);
+///////////////////   CLOCK DIVIDERS   ////////////////////
+reg ce_pix;
+always @(posedge clk_sys) begin
+	reg [1:0] div4;
+	div4 <= div4 + 1'd1;
+	ce_pix <= !div4;
+end
+
+reg ce_2;
+always @(posedge clk_sys) begin
+	reg [3:0] div16;
+	div16 <= div16 + 1'd1;
+	ce_2 <= !div16;
+end
 
 ///////////////////   VIDEO   ////////////////////
-wire hblank, vblank, hs, vs, hs_original, vs_original;
+wire hblank, vblank, hs, vs;
 wire [7:0] r, g, b;
 
 wire [23:0] rgb = {r,g,b};
-wire rotate_ccw = 0;//status[7];
-wire no_rotate = 1;//~status[6];
-wire flip = 0;//status[7];
+wire rotate_ccw = 0;
+wire no_rotate = 1;
+wire flip = 0;
+wire video_rotated;
 screen_rotate screen_rotate (.*);
 arcade_video #(320,24) arcade_video
 (
@@ -418,23 +378,6 @@ arcade_video #(320,24) arcade_video
 	.HSync(hs),
 	.VSync(vs),
 	.fx(0)//status[5:3])
-);
-
-// H/V offset
-wire [3:0]  voffset = 0;//status[23:20];
-wire [3:0]  hoffset = 0;//status[19:16];
-jtframe_resync jtframe_resync
-(
-  .clk(clk_sys),
-  .pxl_cen(ce_pix),
-  .hs_in(hs_original),
-  .vs_in(vs_original),
-  .LVBL(~vblank),
-  .LHBL(~hblank),
-  .hoffset(hoffset),
-  .voffset(voffset),
-  .hs_out(hs),
-  .vs_out(vs)
 );
 
 ///////////////////   MAIN CORE   ////////////////////
@@ -449,8 +392,8 @@ system system(
 	.reset(reset),
 	.pause(1'b0),
 	//.menu(status[10] || buttons[1]),
-	.VGA_HS(hs_original),
-	.VGA_VS(vs_original),
+	.VGA_HS(hs),
+	.VGA_VS(vs),
 	.VGA_R(r),
 	.VGA_G(g),
 	.VGA_B(b),
@@ -460,13 +403,13 @@ system system(
 	.dn_data(ioctl_dout),
 	.dn_wr(ioctl_wr),
 	.dn_index(ioctl_index),
-	.joystick({joystick_5,joystick_4,joystick_3,joystick_2,joystick_1,joystick_0}),
-	.analog_l(poly_note),//{joystick_l_analog_5,joystick_l_analog_4,joystick_l_analog_3,joystick_l_analog_2,joystick_l_analog_1,joystick_l_analog_0}),
-	.analog_r({joystick_r_analog_5,joystick_r_analog_4,joystick_r_analog_3,joystick_r_analog_2,joystick_r_analog_1,joystick_r_analog_0}),
- 	.paddle({paddle_5,paddle_4,paddle_3,paddle_2,paddle_1,paddle_0}),
-	.spinner({7'b0,spinner_5,7'b0,spinner_4,7'b0,spinner_3,7'b0,spinner_2,7'b0,spinner_1,7'b0,spinner_0}),
-	.ps2_key(note), // ps2_key
-	.ps2_mouse(note2),//{ps2_mouse_ext,7'b0,ps2_mouse}),
+	.joystick(0),
+	.analog_l(poly_note),
+	.analog_r(0),
+ 	.paddle(0),
+	.spinner(0),
+	.ps2_key(note),
+	.ps2_mouse(note2),
 	.poly_en(status[7]),
 	.timestamp(timestamp),
 	.AUDIO_L(0),
@@ -483,8 +426,8 @@ speedcontrol speedcontrol
 );
 
 //GB Midi//
-wire [15:0] GB_AUDIO_L;
-wire [15:0] GB_AUDIO_R;
+wire [15:0] gb_audio_l;
+wire [15:0] gb_audio_r;
 wire [10:0] note;
 wire [10:0] note2;
 wire[255:0] poly_note;
@@ -505,13 +448,13 @@ GBMidi GBMidi
 	.note_out(note),
 	.note_out2(note2),
 	.poly_note_out(poly_note),
-	
-	.audio_l(GB_AUDIO_L),
-	.audio_r(GB_AUDIO_R)
+
+	.audio_l(gb_audio_l),
+	.audio_r(gb_audio_r)
 );
 
-assign AUDIO_L = GB_AUDIO_L;
-assign AUDIO_R = GB_AUDIO_R;
+assign AUDIO_L = gb_audio_l;
+assign AUDIO_R = gb_audio_r;
 assign AUDIO_S = 1;
 
 //Uart
@@ -522,7 +465,7 @@ wire[7:0] midi_data;
 wire midi_send;
 wire midi_ready;
 
-uart_rx #(.DATA_WIDTH(24)) uart_rx //status[15]? 8: 
+uart_rx #(.DATA_WIDTH(24)) uart_rx //status[15]? 8:
 (
 	.clk(clk_sys),
 	.rst(reset),

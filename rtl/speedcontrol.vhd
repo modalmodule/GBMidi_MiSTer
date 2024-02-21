@@ -1,3 +1,10 @@
+--
+-- speedcontrol.vhd
+--
+-- This file's source taken from https://github.com/MiSTer-devel/Gameboy_MiSTer/blob/master/rtl/speedcontrol.vhd
+-- This specific module was written by and added by Robert Peip (https://github.com/RobertPeip/)
+--
+
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
@@ -13,7 +20,7 @@ end entity;
 
 architecture arch of speedcontrol is
     --creating ce and ce_2x
-	signal clkdiv           : unsigned(2 downto 0) := (others => '0'); 
+	signal clkdiv           : unsigned(2 downto 0) := (others => '0');
 
 begin
     process(clk_sys)
@@ -31,4 +38,4 @@ begin
             end if;
 		end if;
 	end	process;
-end architecture;  
+end architecture;

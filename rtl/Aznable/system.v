@@ -528,26 +528,26 @@ end
 // Moroboshi (starfield)
 wire 		sf_on1;
 wire [7:0]	sf_star1;
-starfield #(
-	.H(396),
-	.V(256),
-	.LEN(22),
-	.SEED(22'h1FFFFF),
-	.MASK(22'b0000111100001111000011),
-	.TAPS(22'b1100000000000000000000)
-) stars1
-(
-	.clk(clk_24),
-	.rst(reset),
-	.vblank(VGA_VB),
-	.en(ce_6),
-	.pause(pause_system),
-	.addr(cpu_addr[2:0]),
-	.data_in(cpu_dout),
-	.write(starfield1_cs && !cpu_wr_n),
-	.sf_on(sf_on1),
-	.sf_star(sf_star1)
-);
+// starfield #(
+// 	.H(396),
+// 	.V(256),
+// 	.LEN(22),
+// 	.SEED(22'h1FFFFF),
+// 	.MASK(22'b0000111100001111000011),
+// 	.TAPS(22'b1100000000000000000000)
+// ) stars1
+// (
+// 	.clk(clk_24),
+// 	.rst(reset),
+// 	.vblank(VGA_VB),
+// 	.en(ce_6),
+// 	.pause(pause_system),
+// 	.addr(cpu_addr[2:0]),
+// 	.data_in(cpu_dout),
+// 	.write(starfield1_cs && !cpu_wr_n),
+// 	.sf_on(sf_on1),
+// 	.sf_star(sf_star1)
+// );
 wire 		sf_on2;
 wire [7:0]	sf_star2;
 `ifndef DISABLE_STARS_2

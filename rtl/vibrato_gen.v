@@ -1,19 +1,42 @@
-module vibrato_gen (
-    input en,
-    input clk,
-    input note_on,
-    input note_repeat,
-    input[6:0] note_start,
-    output[8:0] vib_out
+/*============================================================================
+	Game Boy Midi Core - Vibrato generator module
+
+	Aruthor: ModalModule - https://github.com/modalmodule/
+	Version: 0.1
+	Date: 2024-02-19
+
+	This program is free software; you can redistribute it and/or modify it
+	under the terms of the GNU General Public License as published by the Free
+	Software Foundation; either version 3 of the License, or (at your option)
+	any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License along
+	with this program. If not, see <http://www.gnu.org/licenses/>.
+===========================================================================*/
+
+module vibrato_gen
+(
+    input        en,
+    input        clk,
+    input        note_on,
+    input        note_repeat,
+    input  [6:0] note_start,
+    output [8:0] vib_out
 );
+
 reg note_repeat_reg;
-reg[6:0] note_reg;
-reg[8:0] vib_out_reg = 'd12;
-reg[23:0] delay_timer = 'b1; //24
+reg [6:0] note_reg;
+reg [8:0] vib_out_reg = 'd12;
+reg [23:0] delay_timer = 'b1; //24
 reg started;
 reg vib_start;
-reg[16:0] step_timer; //18
-reg[4:0] max = 'd24;
+reg [16:0] step_timer; //18
+reg [4:0] max = 'd24;
 reg flip;
 
 assign vib_out = vib_out_reg;
