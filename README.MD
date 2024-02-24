@@ -4,7 +4,7 @@ A sound module for sending midi data to the sound hardware of a Game Boy (or mul
 
 It works with USB Midi keyboard/controllers natively, just press right on the OSD then select UART mode, Connection: MIDI, MidiLink: USB, then save.
 For Midi Din, use any of the existing methods to plug Din into MiSTer, then choose Din under Midi Source (first option on the main OSD screen).
-Or, you can use "Musical Gamepad" to play notes using the face buttons of a game controller.
+Or, you can use "Musical Gamepad" to play notes using the face buttons of a game controller. CAUTION: MIDI IS BYPASSED WHEN MUSICAL GAMEPAD IS ON!
 
 By default, it dedicates a midi channel per voice, so midi channel 1 to pulse1, channel 2 to pulse2. As of now it only uses the pulse voice channels (more to come!)
 
