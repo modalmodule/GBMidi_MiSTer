@@ -8,9 +8,9 @@ Or, you can use "Musical Gamepad" to play notes using the face buttons of a game
 
 By default, it dedicates a midi channel per voice, so midi channel 1 to pulse1, channel 2 to pulse2. As of now it only uses the pulse voice channels (more to come!)
 
-In Auto-Polyphony mode, it utilizes 8 instances of the gbc_snd module to allow for 16 note polyphony!
+In Auto-Polyphony mode, it utilizes 8 instances of the gbc_snd module to allow for 16 note polyphony, using only midi channel 1!
 
-Some settings don't work with others, as indicated by settings being greyed out. Play with it to see what can be done. One note: Musical Gamepad does not work wth polyphony, but doesn't grey it out.
+Some settings don't work with others, as indicated by settings being greyed out. Play with it to see what can be done. One note: Musical Gamepad does not work with auto-polyphony, but doesn't grey it out.
 
 The "Patch" setting collects settings together into patches, which you can see reflected in the settings as you cycle between the patches.
 
