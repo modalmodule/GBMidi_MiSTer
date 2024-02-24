@@ -16,6 +16,9 @@ The "Patch" setting collects settings together into patches, which you can see r
 
 This is in active development so expect to see more from it in the future! :)
 
+If you like this and would to see it flourish, please consider joining my patreon. Your contribution can directly impact the time I can spend working on this and other projects rather than the "day job". :)
+https://www.patreon.com/user?u=6046340
+
 ## License
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
