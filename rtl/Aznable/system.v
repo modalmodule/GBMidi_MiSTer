@@ -22,6 +22,7 @@
 
 module system (
 	input			clk_24,
+	//input			clk_vga,
 	input 			ce_6,
 	input 			ce_2,
 	input			reset,
@@ -49,11 +50,13 @@ module system (
 
 	// ps2 alternative interface.
 	// [8] - extended, [9] - pressed, [10] - toggles with every press/release
-	input [10:0]	ps2_key, //pulse 1
+	input [10:0]	sq1, //pulse 1
 
 	// [0-23] mouse data, [24] - toggles with every event, [25-31] - padding,
 	// [32-39] - wheel movements, [40-47] - reserved(additional buttons)
-	input [47:0]	ps2_mouse, //pulse 2
+	input [10:0]	sq2, //pulse 2
+	input [10:0]	wave, //wave
+	input [10:0]	noise, //noise
 
 	input poly_en,
 
@@ -83,12 +86,18 @@ wire [8:0] hcnt;
 wire [8:0] vcnt;
 
 // Display timing module from JTFRAME
-jtframe_vtimer #(
-	.HB_START(VGA_WIDTH - 1'b1),
-	.VB_START(VGA_HEIGHT - 1'b1)
-) vtimer 
-(
-	.clk(clk_24),
+jtframe_vtimer vtimer (//#(
+	//.VB_START(VGA_HEIGHT - 1'b1), //'d241),
+	/*.VB_END('d263),
+	.VS_START('d243),
+	.VS_END('d246),*/
+	//.HB_START(VGA_WIDTH - 1'b1) //'d321),
+	/*.HB_END('d533),
+	.HS_START('d387),
+	.HS_END('d425)*/
+//) 
+//(
+	.clk(clk_24),//clk_vga),
 	.pxl_cen(ce_6),
 	.V(vcnt), 
 	.H(hcnt),
@@ -105,7 +114,7 @@ wire  [15:0]	timer;
 generic_timer #(16,15,24000) ms_timer
 (
 	.clk(clk_24),
-	.reset(reset || (timer_cs && !cpu_wr_n)),
+	.reset(reset),// || (timer_cs && !cpu_wr_n)),
 	.counter(timer)
 );
 
@@ -121,9 +130,11 @@ wire [7:0] analog_l_data_out = analog_l[{cpu_addr[5:0],3'd0} +: 8]; //[{cpu_addr
 //wire [7:0] analog_r_data_out = analog_r[{cpu_addr[3:0],3'd0} +: 8];
 //wire [7:0] paddle_data_out = paddle[{cpu_addr[2:0],3'd0} +: 8];
 wire [7:0] spinner_data_out = spinner[{cpu_addr[3:0],3'd0} +: 8];
-wire [7:0] ps2_key_data_out = ps2_key[{cpu_addr[0],3'd0} +: 8];
-wire [7:0] ps2_mouse_data_out = ps2_mouse[{cpu_addr[2:0],3'd0} +: 8];
-wire [7:0] timestamp_data_out = timestamp[{cpu_addr[2:0],3'd0} +: 8];
+wire [7:0] sq1_data_out = sq1[{cpu_addr[0],3'd0} +: 8];
+wire [7:0] sq2_data_out = sq2[{cpu_addr[0],3'd0} +: 8];
+wire [7:0] wav_data_out = wave[{cpu_addr[0],3'd0} +: 8];
+wire [7:0] noi_data_out = noise[{cpu_addr[0],3'd0} +: 8];
+//wire [7:0] timestamp_data_out = timestamp[{cpu_addr[2:0],3'd0} +: 8];
 wire [7:0] timer_data_out = timer[{cpu_addr[0],3'd0} +: 8];
 wire [7:0] tilemapcontrol_data_out;
 wire [7:0] music_data_out;
@@ -140,10 +151,12 @@ wire analog_l_cs = memory_map_addr == 8'b10000010;
 //wire analog_r_cs = memory_map_addr == 8'b10000011;
 //wire paddle_cs = memory_map_addr == 8'b1000100;
 wire spinner_cs = memory_map_addr == 8'b10000101;
-wire ps2_key_cs = memory_map_addr == 8'b10000110;
-wire ps2_mouse_cs = memory_map_addr == 8'b10000111;
-wire timestamp_cs = memory_map_addr == 8'b10001000;
-wire timer_cs = memory_map_addr == 8'b10001001;
+wire sq1_cs = memory_map_addr == 8'b10000110;
+wire sq2_cs = memory_map_addr == 8'b10000111;
+wire wav_cs = memory_map_addr == 8'b10001000;
+wire noi_cs = memory_map_addr == 8'b10001001;
+//wire timestamp_cs = memory_map_addr == 8'b10001000;
+//wire timer_cs = memory_map_addr == 8'b10001001;
 wire starfield1_cs = memory_map_addr == 8'b10001010 && cpu_addr[5:4] == 2'b00;
 wire starfield2_cs = memory_map_addr == 8'b10001010 && cpu_addr[5:4] == 2'b01;
 wire starfield3_cs = memory_map_addr == 8'b10001010 && cpu_addr[5:4] == 2'b10;
@@ -277,10 +290,12 @@ assign cpu_din = pgrom_cs ? pgrom_data_out :
 				 //analog_r_cs ? analog_r_data_out :
 				 //paddle_cs ? paddle_data_out :
 				 spinner_cs ? spinner_data_out :
-				 ps2_key_cs ? ps2_key_data_out :
-				 ps2_mouse_cs ? ps2_mouse_data_out :
-				 timestamp_cs ? timestamp_data_out :
-				 timer_cs ? timer_data_out :
+				 sq1_cs ? sq1_data_out :
+				 sq2_cs ? sq2_data_out :
+				 wav_cs ? wav_data_out :
+				 noi_cs ? noi_data_out :
+				 //timestamp_cs ? timestamp_data_out :
+				 //timer_cs ? timer_data_out :
 				 tilemapcontrol_cs ? tilemapcontrol_data_out :
 				 music_cs ? music_data_out :
 				 system_menu_cs ? {8{menu_trigger}} :

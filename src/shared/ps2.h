@@ -87,12 +87,18 @@ extern char kbd_scan;
 extern char kbd_pressed;
 extern char kbd_extend;
 extern char kbd_scan2;
+extern char kbd_scan3;
+extern char kbd_scan4;
 extern char kbd_pressed2;
+extern char kbd_pressed3;
+extern char kbd_pressed4;
 extern char kbd_extend2;
 extern char kbd_scan_poly[16];
 extern char kbd_ascii;
 extern char* kbd_asciis;
 extern char* kbd_asciis2;
+extern char* kbd_asciis3;
+extern char* kbd_asciis4;
 extern char* kbd_asciis_poly[16];
 const extern char* off;
 
@@ -110,8 +116,10 @@ extern bool kbd_down[256];
 
 extern void get_ascii();
 
-extern void handle_ps2();
-extern void handle_ps22();
+extern void handle_sq1();
+extern void handle_sq2();
+extern void handle_wav();
+extern void handle_noi();
 extern void handle_poly();
 
 #endif

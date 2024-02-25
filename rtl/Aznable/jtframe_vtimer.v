@@ -36,8 +36,8 @@
 module jtframe_vtimer(
     input               clk,
     input               pxl_cen,
-    output  reg [8:0]   V,
-    output  reg [8:0]   H,
+    output  reg [9:0]   V,
+    output  reg [9:0]   H,
     output  reg         Hinit,
     output  reg         Vinit,
     output  reg         LHBL,
@@ -60,33 +60,33 @@ end
 `endif
 
 // Default values suit Contra arcade
-parameter [8:0] VCNT_START = 9'd0,
-                VB_START = 9'd240,
-                VB_END   = 9'd255,
+parameter [9:0] VCNT_START = 10'd0,
+                VB_START = 10'd240,
+                VB_END   = 10'd262,
                 VCNT_END = VB_END,
-                VS_START = 9'd244,
+                VS_START = 10'd244,
                 VS_END   = (VS_START+9'd3),
-                HB_END   = 9'd395,
-                HB_START = HB_END-9'd116,
+                HB_END   = 10'd532,
+                HB_START = 10'd320,
                 HCNT_END = HB_END,
-                HS_START = 9'd330,
-                HS_END   = HS_START+9'd27, // Default 4.5us for a 6MHz clock
+                HS_START = 10'd388,
+                HS_END   = HS_START+10'd39, // Default 4.5us for a 6MHz clock
                 H_VB     = HB_START,
                 H_VS     = HS_START,
                 H_VNEXT  = HS_START,
                 HINIT    = H_VNEXT,
-                HCNT_START=9'd0;
+                HCNT_START=10'd0;
 
 // H counter
 always @(posedge clk) if(pxl_cen) begin
     Hinit <= H == HINIT;
-    H     <= H == HCNT_END ? HCNT_START : (H + 9'd1);
+    H     <= H == HCNT_END ? HCNT_START : (H + 10'd1);
 end
 
 always @(posedge clk) if(pxl_cen) begin
     if(H==H_VNEXT) begin
         Vinit <= V == VB_END;
-        V     <= V == VCNT_END ? VCNT_START : (V + 9'd1);
+        V     <= V == VCNT_END ? VCNT_START : (V + 10'd1);
     end
 
     if(H==HB_START)

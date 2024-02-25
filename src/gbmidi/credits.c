@@ -104,7 +104,7 @@ void app_credits()
 
 		if (VBLANK_FALLING)
 		{
-			handle_ps2();
+			//handle_ps2();
 			basic_input();
 			if (input_a || input_b || input_select || input_start)
 			{

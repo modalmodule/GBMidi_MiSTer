@@ -210,19 +210,59 @@ assign VIDEO_ARY = (!ar) ? 12'd3 : 12'd0;
 `include "build_id.v"
 localparam CONF_STR = {
 	"GBMidi;UART31250,MIDI;",
-	"O[2],Midi Source,USB,Din;",
+	"-;",
+	"D1O[2],Midi Source,USB,Din;",
+	"-,FOR USB SETUP UART (PRESS->);",
+	"-;",
 	"O[3],Musical Gamepad,Off,On;",
 	"-;",
-	"O[21:19],Patch,Blank,Lead,Pad,Blip;",
-	"D3D4O[6:5],Duty Cycle,12.5,25,50;",
-	"D4O[13],Duty ctrld by ModWheel,Off,On;",
-	"O[15],Auto-Duty,Off,On;",
-	"O[14],Vibrato,Off,On;",  //0111000011000 17:5 < example patch
-	"O[17],Blip,Off,On;",
-	"D1O[8],Fade Out,Off,On;",
-	"d2O[12:9], Fade Speed,0,1,2,3,4,5,6,7,8,9;",
-	"O[16],Echo,Off,On;",
-	"D1D5O[7],Auto-Polyphony,Off,On;",
+	"DBO[68:67],Midi Ch 1 Voice,Pulse 1,Pulse 2,Wave,Noise;",
+	"-;",
+	"P1,Pulse 1 Settings;",
+	"P1-;",
+	"P1O[21:19],Patch,Blank,Lead,Pad,Blip;",
+	"D3D4P1O[6:5],Duty Cycle,12.5,25,50;",
+	"D4P1O[13],Duty ctrld by ModWheel,Off,On;",
+	"P1O[15],Auto-Duty,Off,On;",
+	"P1O[14],Vibrato,Off,On;",  //0111000011000 17:5 < example patch
+	"P1O[17],Blip,Off,On;",
+	"P1O[8],Fade Out,Off,On;",
+	"d2P1O[12:9], Fade Speed,0,1,2,3,4,5,6,7,8,9;",
+	"P1-;",
+	"P2,Pulse 2 Settings;",
+	"P2-;",
+	"P2O[38:36],Patch,Blank,Lead,Pad,Blip;", //+17
+	"D6D7P2O[23:22],Duty Cycle,12.5,25,50;",
+	"D7P2O[30],Duty ctrld by ModWheel,Off,On;",
+	"P2O[32],Auto-Duty,Off,On;",
+	"P2O[31],Vibrato,Off,On;",  //0111000011000 34:22 < example patch
+	"P2O[34],Blip,Off,On;",
+	"P2O[25],Fade Out,Off,On;",
+	"d8P2O[29:26], Fade Speed,0,1,2,3,4,5,6,7,8,9;",
+	"P2-;",
+	"P3,Wave Settings;",
+	"P3-;",
+	"P3O[51:49],Patch,Bass,Lead,Kick;", //+14
+	"P3O[55:52],Waveform,Bass,Lead,Triangle,Saw,Square;", //fadespeed(4), fade_en, fallspeed(3), fall_en, blip_en, vib, wave(4)
+	"P3O[56],Vibrato,Off,On;",  //0100 1 101 1 0 0 0100 66:52 < example patch kick
+	"P3O[57],Blip,Off,On;",
+	"P3O[58],Pitch Fall,Off,On;",
+	"dEP3O[61:59], Fall Speed,0,1,2,3,4,5;",
+	"P3O[62],Fade Out,Off,On;",
+	"dAP3O[66:63], Fade Speed,0,1,2,3,4,5,6,7,8,9;",
+	"P3-;",
+	"P4,Noise Settings;",
+	"P4-;",
+	"P4O[71:69],Patch,Blank,Drum,Crash;", //+14
+	"P4O[39],Noise Type,White,Periodic;",
+	"P4O[40],Pitch Fall,Off,On;",                  //fadespeed(4), fade_en, fallspeed(3), fall_en, noi_type
+	"dDP4O[43:41], Fall Speed,0,1,2,3,4,5;",        //1001 1 010 1 0 48:39 < drum
+	"P4O[44],Fade Out,Off,On;",
+	"d9P4O[48:45], Fade Speed,0,1,2,3,4,5,6,7,8,9;",
+	"P4-;",
+	"-;",
+	"DCO[16],Echo (P1 to P2),Off,On;",
+	"D1D5O[7],Auto-Polyphony(P1+P2)x4,Off,On;",
 	"-;",
 	"F0,BIN,Load BIOS;",
 	"-;",
@@ -246,7 +286,7 @@ localparam CONF_STR = {
 	"V,v",`BUILD_DATE
 };
 
-wire [31:0] status;
+wire [127:0] status;
 wire  [1:0] buttons;
 wire        forced_scandoubler;
 wire        direct_video;
@@ -267,13 +307,32 @@ wire [15:0] ps2_mouse_ext;
 wire [32:0] timestamp;
 
 //blip, echo, auto-duty, vib, cc1>duty, fade speed (4), fade_en, auto-poly, set duty (2)
-reg[12:0] lead_patch = 'b0111000011000;
+reg[12:0] lead_patch = 'b0111000011000; //Pulse
 reg[12:0] pad_patch  = 'b0000000011101;
 reg[12:0] blip_patch = 'b1100010011010;
+reg[12:0] leadp2_patch = 'b0011000011000;
+reg[12:0] padp2_patch  = 'b0000000011001;
+reg[12:0] blipp2_patch = 'b1000010011010;
+//fadespeed(4), fade_en, fallspeed(3), fall_en, blip_en, vib, wave(4)
+reg[14:0] Wlead_patch = 'b000010000010001; //Wave
+reg[14:0] Wkick_patch = 'b010011011000100;
+//fadespeed(4), fade_en, fallspeed(3), fall_en, noi_type
+reg[9:0] Ndrum_patch = 'b1001101010;
+reg[9:0] Ncrash_patch = 'b0100100000;
 reg[12:0] patch;
 reg patch_set;
 reg[2:0] patch_reg;
+reg[12:0] patch2;
+reg patch2_set;
+reg[2:0] patch2_reg;
+reg[14:0] patch3;
+reg patch3_set;
+reg[2:0] patch3_reg;
+reg[9:0] patch4;
+reg patch4_set;
+reg[2:0] patch4_reg;
 always @ (posedge clk_sys) begin
+	//pulse 1
 	if (patch_reg != status[21:19]) begin
 		patch_reg <= status[21:19];
 		case(status[21:19])
@@ -283,19 +342,83 @@ always @ (posedge clk_sys) begin
 			end
 			'd1: begin
 				patch <= lead_patch;
+				patch2 <= leadp2_patch;
 				patch_set <= 1;
 			end
 			'd2: begin
 				patch <= pad_patch;
+				patch2 <= pad_patch;
 				patch_set <= 1;
 			end
 			'd3: begin
 				patch <= blip_patch;
+				patch2 <= blipp2_patch;
 				patch_set <= 1;
 			end
 		endcase
 	end
 	if (patch_set) patch_set <= 0;
+	//pulse 2
+	if (patch2_reg != status[38:36]) begin
+		patch2_reg <= status[38:36];
+		case(status[38:36])
+			'd0: begin
+				patch2 <= 0;
+				patch2_set <= 1;
+			end
+			'd1: begin
+				patch2 <= leadp2_patch;
+				patch2_set <= 1;
+			end
+			'd2: begin
+				patch2 <= padp2_patch;
+				patch2_set <= 1;
+			end
+			'd3: begin
+				patch2 <= blipp2_patch;
+				patch2_set <= 1;
+			end
+		endcase
+	end
+	if (patch2_set) patch2_set <= 0;
+	//wav
+	if (patch3_reg != status[51:49]) begin
+		patch3_reg <= status[51:49];
+		case(status[51:49])
+			'd0: begin
+				patch3 <= 0;
+				patch3_set <= 1;
+			end
+			'd1: begin
+				patch3 <= Wlead_patch;
+				patch3_set <= 1;
+			end
+			'd2: begin
+				patch3 <= Wkick_patch;
+				patch3_set <= 1;
+			end
+		endcase
+	end
+	if (patch3_set) patch3_set <= 0;
+	//noi
+	if (patch4_reg != status[71:69]) begin
+		patch4_reg <= status[71:69];
+		case(status[71:69])
+			'd0: begin
+				patch4 <= 0;
+				patch4_set <= 1;
+			end
+			'd1: begin
+				patch4 <= Ndrum_patch;
+				patch4_set <= 1;
+			end
+			'd2: begin
+				patch4 <= Ncrash_patch;
+				patch4_set <= 1;
+			end
+		endcase
+	end
+	if (patch4_set) patch4_set <= 0;
 end
 
 hps_io #(.CONF_STR(CONF_STR)) hps_io
@@ -307,9 +430,9 @@ hps_io #(.CONF_STR(CONF_STR)) hps_io
 
 	.buttons(buttons),
 	.status(status),
-	.status_in ({status[31:18], patch, status[4:0]}),
-	.status_set (patch_set),
-	.status_menumask({status[16],status[15],status[13],status[8],status[3],status[5]}),
+	.status_in ({status[127:67], patch_set|patch2_set|patch4_set?status[66:52]:patch3, status[51:49], patch_set|patch2_set|patch3_set?status[48:39]:patch4, status[38:35], patch3_set|patch4_set?status[34:22]:patch2, status[21:18], (patch2_set|patch3_set|patch4_set?status[17:5]:patch), status[4:0]}),
+	.status_set (patch_set | patch2_set | patch3_set | patch4_set),
+	.status_menumask({status[58],status[40],status[68]|status[67],status[7],status[62],status[44],status[25],status[32],status[30],status[16],status[15],status[13],status[8],status[3],status[5]}),
 	//.status_menumask({direct_video}),
 	.forced_scandoubler(forced_scandoubler),
 	.direct_video(direct_video),
@@ -336,16 +459,18 @@ hps_io #(.CONF_STR(CONF_STR)) hps_io
 
 ////////////////////   CLOCKS   ///////////////////
 wire clk_sys;
+//wire clk_vga; 
 pll pll
 (
 	.refclk(CLK_50M),
 	.rst(0),
-	.outclk_0(clk_sys)
+	.outclk_0(clk_sys),
+	//.outclk_1(clk_vga)
 );
 
 ///////////////////   CLOCK DIVIDERS   ////////////////////
 reg ce_pix;
-always @(posedge clk_sys) begin
+always @(posedge clk_sys) begin //clk_vga
 	reg [1:0] div4;
 	div4 <= div4 + 1'd1;
 	ce_pix <= !div4;
@@ -387,6 +512,7 @@ assign LED_USER = rom_download;
 
 system system(
 	.clk_24(clk_sys),
+	//.clk_vga(clk_vga),
 	.ce_6(ce_pix),
 	.ce_2(ce_2),
 	.reset(reset),
@@ -408,8 +534,10 @@ system system(
 	.analog_r(0),
  	.paddle(0),
 	.spinner(0),
-	.ps2_key(note),
-	.ps2_mouse(note2),
+	.sq1(note),
+	.sq2(note2),
+	.wave(note3),
+	.noise(note4),
 	.poly_en(status[7]),
 	.timestamp(timestamp),
 	.AUDIO_L(0),
@@ -430,6 +558,8 @@ wire [15:0] gb_audio_l;
 wire [15:0] gb_audio_r;
 wire [10:0] note;
 wire [10:0] note2;
+wire [10:0] note3;
+wire [10:0] note4;
 wire[255:0] poly_note;
 GBMidi GBMidi
 (
@@ -447,6 +577,8 @@ GBMidi GBMidi
 
 	.note_out(note),
 	.note_out2(note2),
+	.note_out3(note3),
+	.note_out4(note4),
 	.poly_note_out(poly_note),
 
 	.audio_l(gb_audio_l),

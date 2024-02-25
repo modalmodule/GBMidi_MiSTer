@@ -45,10 +45,14 @@ signed char sx_last[6];
 unsigned long sx_pos[6];
 unsigned char kbd_scan_last = 1;
 unsigned char kbd_scan_last2 = 1;
+unsigned char kbd_scan_last3 = 1;
+unsigned char kbd_scan_last4 = 1;
 unsigned char kbd_scan_last_poly[16];
 unsigned char kbd_ascii_last = 1;
 char* kbd_asciis_last;
 char* kbd_asciis_last2;
+char* kbd_asciis_last3;
+char* kbd_asciis_last4;
 char* kbd_asciis_last_poly[16];
 unsigned char mse_button1_last = 255;
 unsigned char mse_button2_last = 255;
@@ -225,8 +229,10 @@ void page_inputtester_advanced()
         write_string(label, 0xFF - (j * 2), 14, 14 + j);
     }*/
 
-    write_string("PULSE1", 0xA8, 12, 10); //0xFF, 2, 21
-    write_string("PULSE2", 0xA8, 12, 14);
+    write_string("PULSE1", 0xA8, 12, 6); //0xFF, 2, 21
+    write_string("PULSE2", 0xA8, 12, 10);
+    write_string("WAVE", 0xA8, 12, 14);
+    write_string("NOISE", 0xA8, 12, 18);
 
     /*write_string("MOUSE", 0xFF, 2, 23);
     write_string("WHL", 0xFF, 16, 23);
@@ -455,7 +461,7 @@ void inputtester_digital()
 {
 
     // Handle PS/2 inputs whenever possible to improve latency
-    handle_ps2();
+    //handle_ps2();
 
     // Handle secret code detection (joypad 1 directions)
     if (HBLANK_RISING)
@@ -520,7 +526,7 @@ void inputtester_analog()
 {
 
     // Handle PS/2 inputs whenever possible to improve latency
-    handle_ps2();
+    //handle_ps2();
 
     if (HBLANK_RISING)
     {
@@ -611,8 +617,10 @@ void inputtester_advanced()
 {
     // Handle PS/2 inputs whenever possible to improve latency
     if (!poly_en) {
-        handle_ps2();
-        handle_ps22();
+        handle_sq1();
+        handle_sq2();
+        handle_wav();
+        handle_noi();
     } else handle_poly();
 
     // Handle secret code detection (joypad 1 directions)
@@ -723,55 +731,71 @@ void inputtester_advanced()
         // Scancode output
         if (!poly_en) {
             if (poly_switch) {
-                for (int i = 0; i < 16; i++) {
-                    write_string("                    ", 0xA8, 12, 5+i);
+                for (int i = 0; i < 8; i++) {
+                    write_string("                    ", 0xA8, 12, 6+i+i);
                 }
-                write_string("PULSE1", 0xA8, 12, 10);
-                write_string("PULSE2", 0xA8, 12, 14);
+                write_string("PULSE1", 0xA8, 12, 6);
+                write_string("PULSE2", 0xA8, 12, 10);
+                write_string("WAVE", 0xA8, 12, 14);
+                write_string("NOISE", 0xA8, 12, 18);
                 poly_switch = 0;
             }
-            if ((kbd_scan != kbd_scan_last || kbd_asciis != kbd_asciis_last) && kbd_scan < 89) //kbd_ascii != kbd_ascii_last
+            if ((kbd_scan != kbd_scan_last || kbd_asciis != kbd_asciis_last) && kbd_scan < 89)
             {
                 int octave = (int)kbd_scan/12;
-                write_stringf("%02u ", 0xA8, 21, 10, kbd_scan);
-                if (kbd_asciis != off) {
-                    write_stringf("%u ", 0xA8, 27, 10, octave);
-                }
-                write_string(kbd_asciis, 0xA8, 25, 10);
-                //write_char(kbd_ascii, 0xFF, 14, 21);
+                write_stringf("%02u ", 0xA8, 21, 6, kbd_scan);
+                write_stringf("%u ", 0xA8, 27, 6, octave);
+                write_string(kbd_asciis, 0xA8, 25, 6);
 
                 kbd_scan_last = kbd_scan;
-                kbd_asciis_last = kbd_asciis; //kbd_ascii_last = kbd_ascii;
+                kbd_asciis_last = kbd_asciis;
             }
-            if ((kbd_scan2 != kbd_scan_last2 || kbd_asciis2 != kbd_asciis_last2) && kbd_scan2 < 89) //kbd_ascii != kbd_ascii_last
+            if ((kbd_scan2 != kbd_scan_last2 || kbd_asciis2 != kbd_asciis_last2) && kbd_scan2 < 89)
             {
                 int octave = (int)kbd_scan2/12;
-                write_stringf("%02u ", 0xA8, 21, 14, kbd_scan2);
-                if (kbd_asciis2 != off) {
-                    write_stringf("%u ", 0xA8, 27, 14, octave);
-                }
-                write_string(kbd_asciis2, 0xA8, 25, 14);
-                //write_char(kbd_ascii, 0xFF, 14, 21);
+                write_stringf("%02u ", 0xA8, 21, 10, kbd_scan2);
+                 write_stringf("%u ", 0xA8, 27, 10, octave);
+                write_string(kbd_asciis2, 0xA8, 25, 10);
 
                 kbd_scan_last2 = kbd_scan2;
-                kbd_asciis_last2 = kbd_asciis2; //kbd_ascii_last = kbd_ascii;
+                kbd_asciis_last2 = kbd_asciis2;
+            }
+            if ((kbd_scan3 != kbd_scan_last3 || kbd_asciis3 != kbd_asciis_last3) && kbd_scan3 < 89)
+            {
+                int octave = (int)kbd_scan3/12;
+                write_stringf("%02u ", 0xA8, 21, 14, kbd_scan3);
+                write_stringf("%u ", 0xA8, 27, 14, octave);
+                write_string(kbd_asciis3, 0xA8, 25, 14);
+
+                kbd_scan_last3 = kbd_scan3;
+                kbd_asciis_last3 = kbd_asciis3;
+            }
+            if ((kbd_scan4 != kbd_scan_last4 || kbd_asciis4 != kbd_asciis_last4) && kbd_scan4 < 89)
+            {
+                int octave = (int)kbd_scan4/12;
+                write_stringf("%02u ", 0xA8, 21, 18, kbd_scan4);
+                write_stringf("%u ", 0xA8, 27, 18, octave);
+                write_string(kbd_asciis4, 0xA8, 25, 18);
+
+                kbd_scan_last4 = kbd_scan4;
+                kbd_asciis_last4 = kbd_asciis4;
             }
         } else {
             if (!poly_switch) {
                 write_string("                    ", 0xA8, 12, 10);
                 write_string("                    ", 0xA8, 12, 14);
-                for (int i = 0; i < 16; i++) {
-                    write_stringf("PULSE%u", 0xA8, 12, 5+i, i+1);
+                for (int i = 0; i < 8; i++) {
+                    write_stringf("PULSE%u", 0xA8, 12, 6+i+i, i+1);
                 }
                 poly_switch = 1;
             }
-            for (int i = 0; i < 16; i++) {
+            for (int i = 0; i < 8; i++) {
                 if ((kbd_scan_poly[i] != kbd_scan_last_poly[i] || kbd_asciis_poly[i] != kbd_asciis_last_poly[i]) && kbd_scan_poly[i] < 89)
                 {
                     int octave = (int)kbd_scan_poly[i]/12;
-                    write_stringf("%02u ", 0xA8, 21, 5+i, kbd_scan_poly[i]);
-                    write_stringf("%u ", 0xA8, 27, 5+i, octave);
-                    write_string(kbd_asciis_poly[i], 0xA8, 25, 5+i);
+                    write_stringf("%02u ", 0xA8, 21, 6+i+i, kbd_scan_poly[i]);
+                    write_stringf("%u ", 0xA8, 27, 6+i+i, octave);
+                    write_string(kbd_asciis_poly[i], 0xA8, 25, 6+i+i); //5+i
 
                     kbd_scan_last_poly[i] = kbd_scan_poly[i];
                     kbd_asciis_last_poly[i] = kbd_asciis_poly[i];
@@ -867,7 +891,7 @@ void btntest_starttest()
     btntest_timer = btntest_timer_start;
 
     // Reset hardware timer
-    timer[0] = 0;
+    //timer[0] = 0;
 
     write_string("Press here", 0xDD, 14, 14);
     write_char(19, 0xDD, 19, 15);
@@ -973,7 +997,7 @@ void btntest_test()
     bool down = CHECK_BIT(joystick[btntest_buttonbank], btntest_buttonindex);
     if (down && !btntest_buttondownlast)
     {
-        btntest_presses[btntest_pos] = GET_TIMER;
+        //btntest_presses[btntest_pos] = GET_TIMER;
         btntest_pos++;
         if (btntest_pos == 14)
         {
@@ -1030,7 +1054,7 @@ void btntest_test()
         if (btntest_timer == 0)
         {
             // Capture timer
-            btntest_prompts[btntest_counter] = GET_TIMER;
+            //btntest_prompts[btntest_counter] = GET_TIMER;
 
             // Display test counter
             write_stringf("%2d", 0xFF, 18, 6, btntest_counter + 1);
@@ -1152,7 +1176,7 @@ void gunsight()
 {
 
     // Handle PS/2 inputs whenever possible to improve latency
-    handle_ps2();
+    //handle_ps2();
 
     if (HBLANK_RISING)
     {

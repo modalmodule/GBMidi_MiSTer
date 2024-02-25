@@ -44,10 +44,10 @@
 	.globl _starfield3
 	.globl _starfield2
 	.globl _starfield1
-	.globl _timer
-	.globl _timestamp
-	.globl _ps2_mouse
-	.globl _ps2_key
+	.globl _noi
+	.globl _wav
+	.globl _sq2
+	.globl _sq1
 	.globl _spinner
 	.globl _analog_l
 	.globl _joystick
@@ -65,10 +65,10 @@ _video_ctl	=	0x8001
 _joystick	=	0x8100
 _analog_l	=	0x8200
 _spinner	=	0x8500
-_ps2_key	=	0x8600
-_ps2_mouse	=	0x8700
-_timestamp	=	0x8800
-_timer	=	0x8900
+_sq1	=	0x8600
+_sq2	=	0x8700
+_wav	=	0x8800
+_noi	=	0x8900
 _starfield1	=	0x8a00
 _starfield2	=	0x8a10
 _starfield3	=	0x8a20
