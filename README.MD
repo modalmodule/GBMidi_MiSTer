@@ -4,11 +4,10 @@ A sound module for sending midi data to the sound hardware of a Game Boy (or mul
 
 ## Instructions
 
-It works with USB Midi keyboard/controllers natively, just press right on the OSD then select UART mode, Connection: MIDI, MidiLink: USB, then save. You will also need to edit the Midilink.ini file located in `./linux/` on the MiSTer's MicroSD card. Add the following entry:
+It works with USB Midi keyboard/controllers natively, just press right on the OSD then select UART mode, Connection: MIDI, MidiLink: USB, then save. If you want to control via UDPMidi you will need to edit the Midilink.ini file located in `./linux/` on the MiSTer's MicroSD card. Add the following entry:
 
 ```ini
 [GBMIDI]
-MIDI_BAUD           = 31250
 UDP_BAUD            = 31250
 ```
 
