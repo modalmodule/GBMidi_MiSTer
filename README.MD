@@ -1,10 +1,19 @@
-#   GBMidi_MiSTer
+# GBMidi core for [MiSTer FPGA](https://mister-devel.github.io/MkDocs_MiSTer/)
 
-A sound module for sending midi data to the sound hardware of a Game Boy (or multiple), utilizing gbc_snd from Gameboy_MiSTer by Tim Harbaum and Sorgelig, and using code from Input Tester by JimmyStones (see below)
+A sound module for sending midi data to the sound hardware of a Game Boy (or multiple), utilizing gbc_snd from Gameboy_MiSTer by Tim Harbaum and Sorgelig, and using code from Input Tester by JimmyStones (see below).
 
-It works with USB Midi keyboard/controllers natively, just press right on the OSD then select UART mode, Connection: MIDI, MidiLink: USB, then save.
-For Midi Din, use any of the existing methods to plug Din into MiSTer, then choose Din under Midi Source (first option on the main OSD screen).
-Or, you can use "Musical Gamepad" to play notes using the face buttons of a game controller. CAUTION: MIDI IS BYPASSED WHEN MUSICAL GAMEPAD IS ON!
+## Instructions
+
+It works with USB Midi keyboard/controllers natively, just press right on the OSD then select UART mode, Connection: MIDI, MidiLink: USB, then save. If you want to control via UDPMidi you will need to edit the Midilink.ini file located in `./linux/` on the MiSTer's MicroSD card. Add the following entry:
+
+```ini
+[GBMIDI]
+UDP_BAUD            = 31250
+```
+
+For Midi Din, use any of the existing methods to plug Din into MiSTer, then choose Din under Midi Source (first option on the main OSD screen). Or, you can use "Musical Gamepad" to play notes using the face buttons of a game controller. CAUTION: MIDI IS BYPASSED WHEN MUSICAL GAMEPAD IS ON!
+
+You can also use Binarybond007's [udpmidi version 2](https://github.com/bbond007/UDPMIDI20) alongside [loopmidi](https://www.tobias-erichsen.de/software/loopmidi.html) to [play midi from your computer over the network using UDP packets](https://www.youtube.com/watch?v=1LbvnLnmczY) (that's what the UDP_BAUD setting above is for).
 
 By default, it dedicates a midi channel per voice, so midi channel 1 to pulse1, channel 2 to pulse2. As of now it only uses the pulse voice channels (more to come!)
 
@@ -17,15 +26,15 @@ The "Patch" setting collects settings together into patches, which you can see r
 This is in active development so expect to see more from it in the future! :)
 
 If you like this and would to see it flourish, please consider joining my patreon. Your contribution can directly impact the time I can spend working on this and other projects rather than the "day job". :)
+
 https://www.patreon.com/user?u=6046340
 
-## License
+### License
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
+##	MiSTer Input Tester Readme
 
-#	MiSTer Input Tester
-
-## Acknowledgements
+### Acknowledgements
 
 Created by JimmyStones (http://github.com/jimmystones), with thanks to:
 - alanswx (https://github.com/alanswx) for ideas, cross-platform simulation support, and the tutorial this core was based on
@@ -35,10 +44,10 @@ Created by JimmyStones (http://github.com/jimmystones), with thanks to:
 - M. Walrus (@WalrusFPGA) for more testing
 - Sorgelig (https://github.com/sorgelig) for testing, finding bugs and suggesting new features.  Oh, and the MiSTer project :)
 
-## Hardware
+### Hardware
 
 The InputTest core is based on my Aznable 'custom hardware' project.  See the main repo for hardware and software details, build instruction, etc 
 https://github.com/JimmyStones/Aznable 
 
-## License
+### License
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
