@@ -15,17 +15,21 @@ For Midi Din, use any of the existing methods to plug Din into MiSTer, then choo
 
 You can also use Binarybond007's [udpmidi version 2](https://github.com/bbond007/UDPMIDI20) alongside [loopmidi](https://www.tobias-erichsen.de/software/loopmidi.html) to [play midi from your computer over the network using UDP packets](https://www.youtube.com/watch?v=1LbvnLnmczY) (that's what the UDP_BAUD setting above is for).
 
-By default, it dedicates a midi channel per voice, so midi channel 1 to pulse1, channel 2 to pulse2. As of now it only uses the pulse voice channels (more to come!)
+By default, it dedicates a midi channel per voice, so midi channel 1 to pulse1, channel 2 to pulse2, channel 3 to wave, channel 4 to noise. You can also change the default channel assignments via the "Midi Ch 1 Voice" OSD setting, where you can cycle which voice (pulse1, 2, wave or noise) is being played by midi channel 1 (the default for midi controllers), and the others cycle to suit, only ever using channels 1-4.
 
-In Auto-Polyphony mode, it utilizes 8 instances of the gbc_snd module to allow for 16 note polyphony, using only midi channel 1!
+In Auto-Polyphony mode, it utilizes 4 instances of the gbc_snd module to allow for 8 note polyphony (using pulse1 and 2 of each instance), using only midi channel 1!
 
-Some settings don't work with others, as indicated by settings being greyed out. Play with it to see what can be done. One note: Musical Gamepad does not work with auto-polyphony, but doesn't grey it out.
+Some settings don't work with others, as indicated by settings being greyed out. Play with it to see what can be done. Note, turning echo on while auto-poly is on will result in no sound (they can't be used together).
 
-The "Patch" setting collects settings together into patches, which you can see reflected in the settings as you cycle between the patches.
+Each voice has its own settings, in which the "Patch" setting collects settings together into patches, which you can see reflected in the settings as you cycle between the patches. Note echo and auto-poly are affected by Pulse 1 patches.
+
+Wave specifically has the "waveform" setting for switching between an assortment of preset waveforms. More to come (feel free to request them through whatever means of communication you'd like). Custom waveform building is planned but out of the scope of this release.
+
+Note the lowest usable note for all voices is C2 (2 octaves below middle C), any lower and things get... funny. The Wave "kick" patch only works as intended at C7 and above (3 octaves above middle C). Noise is "functional" past G4 or so (G above middle C).
 
 This is in active development so expect to see more from it in the future! :)
 
-If you like this and would to see it flourish, please consider joining my patreon. Your contribution can directly impact the time I can spend working on this and other projects rather than the "day job". :)
+If you like this and would to see it (and/or future projects) flourish, please consider joining my patreon. Your contribution can directly impact the time I can spend working on these projects rather than the "day job". :)
 
 https://www.patreon.com/user?u=6046340
 

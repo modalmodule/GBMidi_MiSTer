@@ -35,10 +35,10 @@ unsigned char __at(0x8200) analog_l[32];//[12]; //poly
 //unsigned char __at(0x8300) analog_r[12];
 //unsigned char __at(0x8400) paddle[6];
 unsigned char __at(0x8500) spinner[12];
-unsigned char __at(0x8600) ps2_key[2]; //Pulse 1
-unsigned char __at(0x8700) ps2_mouse[6]; //Pulse 2
-unsigned char __at(0x8800) timestamp[5];
-unsigned char __at(0x8900) timer[2];
+unsigned char __at(0x8600) sq1[2]; //Pulse 1
+unsigned char __at(0x8700) sq2[2]; //Pulse 2
+unsigned char __at(0x8800) wav[2];
+unsigned char __at(0x8900) noi[2];
 unsigned char __at(0x8A00) starfield1[5];
 unsigned char __at(0x8A10) starfield2[5];
 unsigned char __at(0x8A20) starfield3[5];

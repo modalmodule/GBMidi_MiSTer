@@ -6,11 +6,14 @@ set_global_assignment -name VERILOG_FILE rtl/blip_gen.v
 set_global_assignment -name VERILOG_FILE rtl/duty_switch.v
 set_global_assignment -name SYSTEMVERILOG_FILE rtl/echo_gen.sv
 set_global_assignment -name VERILOG_FILE rtl/envelope.v
+set_global_assignment -name VERILOG_FILE rtl/envelopeW.v
 set_global_assignment -name VERILOG_FILE rtl/uart_rx.v
 set_global_assignment -name VERILOG_FILE rtl/midi_trans.v
 set_global_assignment -name VERILOG_FILE rtl/mixer.v
 set_global_assignment -name VERILOG_FILE rtl/poly_disp.v
 set_global_assignment -name VERILOG_FILE rtl/vibrato_gen.v
+set_global_assignment -name VERILOG_FILE rtl/pitchfall.v
+set_global_assignment -name VERILOG_FILE rtl/pitchfallW.v
 
 set_global_assignment -name MIF_FILE rtl/midipb_to_gbfreq_LUT.mif
 set_global_assignment -name QIP_FILE rtl/midipb_to_gbfreq_LUT.qip

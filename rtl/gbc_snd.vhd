@@ -319,7 +319,7 @@ begin
 				sq2_lenchk  <= '0';
 				sq2_trigger <= '0';
 
-				wav_enable  <= '0';
+				wav_enable  <= '1';
 				wav_volsh   <= (others => '0');
 				wav_freq    <= (others => '0');
 				wav_trigger <= '0';
